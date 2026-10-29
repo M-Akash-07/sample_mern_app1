@@ -1,16 +1,20 @@
 let express=require('express');
+let cors=require('cors');
 let app=express();
+let mongoose=require('mongoose');
 let emproutes=require('./routes/emp_route');
 let hrroutes=require('./routes/hr_route');
+app.use(cors());
+
+
+mongoose.connect("mongodb://localhost:27017/hrmanagement")
+  .then(()=>console.log("db connected successfully"))
+  .catch((err)=>console.log(err))
+
+app.use(express.json()); // used to collect input from UI as JSON data
 
 app.use("/api/emp",emproutes);
-//localhost:3000/api/emp/register =>post
-//localhost:3000/api/emp/login =>post
-//localhost:3000/api/emp/viewtask =>get
-//localhost:3000/api/emp/updateprofile =>patch
-
-
-
+app.use("/api/hr",hrroutes);
 //run the server
 app.listen(3000,()=>{
     console.log("server listening on port 3000");

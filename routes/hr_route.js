@@ -1,17 +1,26 @@
 let express=require('express');
-let router=express.Router()
-//router() used to connect api with common route
-router.get("viewemp",(req,res)=>{
-    res.send("/viewemp route called");
-}) 
-router.post("/assign-task",(req,res)=>{
-    res.send("assign-task route called");
-}) 
-router.delete("/deleteemp",(req,res)=>{
-    res.send("deleteemp route called");
-}) 
+let router=express.Router();
+let {users} =require('../models/users');
 
-router.get("/viewtask",(req,res)=>{
-    res.send("viewtask route called");
-}) 
-module.exports=router
+let {task} =require('../models/tasks');
+router.post("/assign-task",async (req,res)=>{
+    let data=req.body;
+    let newtask=new task(data);
+    let result=await newtask.save();
+    res.send(result);
+})
+
+router.get("/viewemp", async (req,res)=>{
+    let result=await users.find();
+    res.send(result);
+})
+router.delete("/deleteemp/:id", async (req,res)=>{
+    let result=await users.findByIdAndDelete(req.params.id);
+    if(result){
+        res.send("record deleted success");
+    }
+  
+})
+
+
+module.exports=router;
